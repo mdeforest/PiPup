@@ -2,10 +2,7 @@ package levels
 
 import (
 	"errors"
-	"io/ioutil"
-	"path/filepath"
 	"reflect"
-	"runtime"
 	"strings"
 
 	"github.com/divan/num2words"
@@ -14,7 +11,7 @@ import (
 )
 
 type Playable interface {
-	PlayLevel(accelerometer *accelerometer.Accelerometer, s *score.Score, length int) int
+	PlayLevel(accelerometer *accelerometer.Accelerometer, s *score.Score, length int)
 }
 
 type Level struct {
@@ -22,38 +19,20 @@ type Level struct {
 }
 
 func CreateLevel(num int) (Playable, error) {
-	_, filename, _, ok := runtime.Caller(1)
+	words := strings.Title(num2words.Convert(num))
 
-	if !ok {
-		return nil, errors.New("could not get number of levels")
+	level := Level{num: num}
+
+	funcName := "NewLevel" + words
+
+	method := reflect.ValueOf(level).MethodByName(funcName)
+
+	if !method.IsValid() {
+		return nil, errors.New("not a valid level")
 	}
 
-	files, err := ioutil.ReadDir(filepath.Dir(filename))
+	result := method.Call(nil)
+	ret := result[0].Interface().(Playable)
 
-	if err != nil {
-		return nil, err
-	}
-
-	for i := 1; i < len(files); i++ {
-		if num == i {
-			words := strings.Title(num2words.Convert(num))
-
-			level := Level{num: num}
-
-			funcName := "NewLevel" + words
-
-			method := reflect.ValueOf(level).MethodByName(funcName)
-
-			if !method.IsValid() {
-				return nil, errors.New("not a valid level")
-			}
-
-			result := method.Call(nil)
-			ret := result[0].Interface().(Playable)
-
-			return ret, nil
-		}
-	}
-
-	return nil, errors.New("not a valid level")
+	return ret, nil
 }

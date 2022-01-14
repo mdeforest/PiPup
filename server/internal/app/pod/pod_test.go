@@ -7,7 +7,7 @@ import (
 )
 
 func TestListenAndServe(t *testing.T) {
-	go ListenAndServe()
+	go ListenAndServe(&PodApp{})
 
 	timeout := 1 * time.Second
 	_, err := net.DialTimeout("tcp", "localhost:8080", timeout)
