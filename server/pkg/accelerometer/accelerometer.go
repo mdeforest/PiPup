@@ -1,6 +1,9 @@
 package accelerometer
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/mdeforest/PiPup/server/pkg/games"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/i2c"
@@ -24,9 +27,20 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 		Driver:  d,
 	}
 
+	work := func() {
+		gobot.Every(100*time.Millisecond, func() {
+			d.GetData()
+
+			fmt.Println("Accelerometer", d.Accelerometer)
+			fmt.Println("Gyroscope", d.Gyroscope)
+			fmt.Println("Temperature", d.Temperature)
+		})
+	}
+
 	robot := gobot.NewRobot(game.String(),
 		[]gobot.Connection{a},
-		[]gobot.Device{d})
+		[]gobot.Device{d},
+		work)
 
 	accelerometer.gobot = robot
 
