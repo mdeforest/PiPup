@@ -10,7 +10,6 @@ func Router() *mux.Router {
 
 	router.HandleFunc("/start", middleware.StartGame).Methods("POST", "OPTIONS")
 	router.HandleFunc("/stop", middleware.StopGame).Methods("POST", "OPTIONS")
-	router.HandleFunc("/test", middleware.Test).Methods("POST", "OPTIONS")
 
 	return router
 }

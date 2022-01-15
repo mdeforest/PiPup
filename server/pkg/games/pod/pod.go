@@ -2,7 +2,6 @@ package pod
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/mdeforest/PiPup/server/pkg/accelerometer"
 	"github.com/mdeforest/PiPup/server/pkg/games"
@@ -57,24 +56,6 @@ func (g *PodGame) Start() {
 	accelerometer.Start()
 
 	gameLevel.PlayLevel(accelerometer, g.scoreboard, g.length)
-
-	accelerometer.Stop()
-
-	fmt.Println("Game Finished")
-
-}
-
-func (g *PodGame) StartTest() {
-	fmt.Println("Game Started")
-
-	accelerometer := accelerometer.NewAccelerometer(games.Pod)
-	if err := accelerometer.Start(); err != nil {
-		return
-	}
-
-	accelerometer.Start()
-
-	time.Sleep(30 * time.Second)
 
 	accelerometer.Stop()
 

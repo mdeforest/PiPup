@@ -9,46 +9,6 @@ import (
 	httpresponses "github.com/mdeforest/PiPup/server/pkg/httpResponses"
 )
 
-func Test(w http.ResponseWriter, r *http.Request) {
-	params := r.URL.Query()
-	level := params.Get("level")
-	length := params.Get("length")
-
-	if level == "" {
-		w.WriteHeader(http.StatusInternalServerError)
-
-		json.NewEncoder(w).Encode(httpresponses.ErrorResponse("level not included"))
-
-		return
-	}
-
-	if length == "" {
-		w.WriteHeader(http.StatusInternalServerError)
-
-		json.NewEncoder(w).Encode(httpresponses.ErrorResponse("time length not included"))
-
-		return
-	}
-
-	levelInt, err := strconv.Atoi(level)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(httpresponses.ErrorResponse("level is not a valid value"))
-	}
-
-	lengthInt, err := strconv.Atoi(length)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(httpresponses.ErrorResponse("length is not a valid value"))
-	}
-
-	game := pod.NewPodGame(levelInt, lengthInt)
-
-	game.StartTest()
-}
-
 func StartGame(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	level := params.Get("level")

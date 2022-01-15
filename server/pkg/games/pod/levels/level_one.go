@@ -25,6 +25,7 @@ func (l *levelOne) PlayLevel(accelerometer *accelerometer.Accelerometer, s *scor
 
 	select {
 	case <-events:
+		fmt.Println("event")
 		s.IncreaseScore(1)
 		dispenser.DispenseTreats()
 	case <-time.After(time.Duration(length) * time.Second):
