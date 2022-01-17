@@ -18,6 +18,7 @@ type Accelerometer struct {
 	game    games.Game
 	adaptor *raspi.Adaptor
 	Driver  *i2c.MPU6050Driver
+	Data    chan float64
 	gobot   *gobot.Robot
 }
 
@@ -31,8 +32,6 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 		Driver:  d,
 	}
 
-	accelerometer.Driver.AddEvent(HasMoved)
-
 	work := func() {
 		gobot.Every(100*time.Millisecond, func() {
 			beforeAccelerometer := d.Accelerometer
@@ -42,7 +41,7 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
 
 			if moved {
-				accelerometer.Driver.Publish(HasMoved, vectorLength)
+				accelerometer.Data <- vectorLength
 			}
 		})
 	}
@@ -53,6 +52,7 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 		work)
 
 	accelerometer.gobot = robot
+	accelerometer.Data = make(chan float64)
 
 	return accelerometer
 }

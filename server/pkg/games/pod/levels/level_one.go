@@ -19,15 +19,8 @@ func (l Level) NewLevelOne() *levelOne {
 func (l *levelOne) PlayLevel(accelerometer *accelerometer.Accelerometer, s *score.Score, length int) {
 	// just wait for accelerometer feedback
 
-	accelerometer.Driver.Start()
-
-	events := accelerometer.Driver.Subscribe()
-
-	defer accelerometer.Driver.Halt()
-	defer accelerometer.Driver.Unsubscribe(events)
-
 	select {
-	case <-events:
+	case <-accelerometer.Data:
 		fmt.Println("moved")
 		s.IncreaseScore(1)
 		dispenser.DispenseTreats()
