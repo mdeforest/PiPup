@@ -42,18 +42,16 @@ func (g *PodGame) SetLength(length int) {
 func (g *PodGame) Start() {
 	fmt.Println("Game Started")
 
-	accelerometer := accelerometer.NewAccelerometer(games.Pod)
-	if err := accelerometer.Start(); err != nil {
-		return
-	}
-
 	gameLevel, err := levels.CreateLevel(g.level)
 
 	if err != nil {
 		return
 	}
 
-	accelerometer.Start()
+	accelerometer := accelerometer.NewAccelerometer(games.Pod)
+	if err := accelerometer.Start(); err != nil {
+		return
+	}
 
 	gameLevel.PlayLevel(accelerometer, g.scoreboard, g.length)
 
