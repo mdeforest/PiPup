@@ -23,15 +23,18 @@ func (l *levelOne) PlayLevel(accelerometer *accelerometer.Accelerometer, s *scor
 
 	events := accelerometer.Driver.Subscribe()
 
+	defer accelerometer.Driver.Halt()
+	defer accelerometer.Driver.Unsubscribe(events)
+
 	select {
 	case <-events:
 		fmt.Println("moved")
 		s.IncreaseScore(1)
 		dispenser.DispenseTreats()
+		return
 	case <-time.After(time.Duration(length) * time.Second):
 		fmt.Println("timeout")
+		return
 	}
 
-	accelerometer.Driver.Unsubscribe(events)
-	accelerometer.Driver.Halt()
 }
