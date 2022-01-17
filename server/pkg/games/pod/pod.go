@@ -2,6 +2,7 @@ package pod
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/mdeforest/PiPup/server/pkg/accelerometer"
 	"github.com/mdeforest/PiPup/server/pkg/games"
@@ -39,7 +40,9 @@ func (g *PodGame) SetLength(length int) {
 	g.length = length
 }
 
-func (g *PodGame) Start() {
+func (g *PodGame) Start(wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	fmt.Println("Game Started")
 
 	gameLevel, err := levels.CreateLevel(g.level)
@@ -58,7 +61,6 @@ func (g *PodGame) Start() {
 	accelerometer.Stop()
 
 	fmt.Println("Game Finished")
-
 }
 
 func (g *PodGame) Reset() {
