@@ -41,7 +41,9 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
 
-			fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
+			fmt.Printf("%f,%f,%f", d.Accelerometer.X, d.Accelerometer.Y, d.Accelerometer.Z)
+
+			//fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
 
 			//if moved {
 			//	accelerometer.Data <- vectorLength
@@ -90,4 +92,8 @@ func hasMoved(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, floa
 	bumpVectorLength := math.Sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)
 
 	return bumpVectorLength > sensitivityThreshold, bumpVectorLength
+}
+
+func hasMoved2(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
+	distance := math.Pow((math.Sqrt(float64(beforeAccel.X)-float64(afterAccel.X)) + math.Sqrt(float64(beforeAccel.Y)-float64(afterAccel.Y)) + math.Sqrt(float64(beforeAccel.Z)-float64(afterAccel.Z))), 0.5)
 }

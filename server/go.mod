@@ -34,4 +34,5 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.10.1
 	gobot.io/x/gobot v1.15.0
+	gonum.org/v1/gonum v0.9.3
 )
