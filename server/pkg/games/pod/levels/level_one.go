@@ -18,7 +18,6 @@ func (l Level) NewLevelOne() *levelOne {
 
 func (l *levelOne) PlayLevel(accelerometer *accelerometer.Accelerometer, s *score.Score, length int) {
 	// just wait for accelerometer feedback
-
 	select {
 	case <-accelerometer.Data:
 		fmt.Println("moved")
@@ -29,5 +28,4 @@ func (l *levelOne) PlayLevel(accelerometer *accelerometer.Accelerometer, s *scor
 		fmt.Println("timeout")
 		return
 	}
-
 }

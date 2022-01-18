@@ -2,6 +2,7 @@ package levels
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -30,6 +31,8 @@ func CreateLevel(num int) (Playable, error) {
 	if !method.IsValid() {
 		return nil, errors.New("not a valid level")
 	}
+
+	fmt.Println("new level")
 
 	result := method.Call(nil)
 	ret := result[0].Interface().(Playable)

@@ -1,6 +1,7 @@
 package accelerometer
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -41,6 +42,7 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
 
 			if moved {
+				fmt.Println("it moved")
 				accelerometer.Data <- vectorLength
 			}
 		})

@@ -51,10 +51,14 @@ func (g *PodGame) Start(wg *sync.WaitGroup) {
 		return
 	}
 
+	fmt.Println("Create accelerator")
+
 	accelerometer := accelerometer.NewAccelerometer(games.Pod)
 	if err := accelerometer.Start(); err != nil {
 		return
 	}
+
+	fmt.Println("accelerometer started")
 
 	gameLevel.PlayLevel(accelerometer, g.scoreboard, g.length)
 
