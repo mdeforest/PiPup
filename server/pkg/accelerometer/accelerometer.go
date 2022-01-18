@@ -1,7 +1,6 @@
 package accelerometer
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -40,7 +39,6 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 			d.GetData()
 
 			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
-			fmt.Println(vectorLength)
 
 			if moved {
 				accelerometer.Data <- vectorLength
@@ -60,11 +58,20 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 }
 
 func (a *Accelerometer) Start() error {
-	return a.gobot.Start()
+	if err := a.gobot.Start(); err != nil {
+		return err
+	}
+
+	if err := a.Driver.Start(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *Accelerometer) Stop() {
 	a.gobot.Stop()
+	a.Driver.Halt()
 }
 
 func hasMoved(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
