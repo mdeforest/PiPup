@@ -39,9 +39,9 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 			d.GetData()
 
-			fmt.Printf("Differences: %f, %f, %f\n", math.Abs(float64(beforeAccelerometer.X-d.Accelerometer.X)), math.Abs(float64(beforeAccelerometer.Y-d.Accelerometer.Y)), math.Abs(float64(beforeAccelerometer.Z-d.Accelerometer.Z)))
+			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
 
-			//moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
+			fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
 
 			//if moved {
 			//	accelerometer.Data <- vectorLength
