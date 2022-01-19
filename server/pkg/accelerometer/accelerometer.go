@@ -12,7 +12,7 @@ import (
 )
 
 const kFilteringFactor float64 = 0.1
-const sensitivityThreshold float64 = 10000.0
+const sensitivityThreshold float64 = 100000.0
 const HasMoved = "has moved"
 
 type Accelerometer struct {
@@ -34,6 +34,8 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 	}
 
 	work := func() {
+		d.GetData()
+
 		gobot.Every(100*time.Millisecond, func() {
 			beforeAccelerometer := d.Accelerometer
 
