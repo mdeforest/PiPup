@@ -1,7 +1,6 @@
 package accelerometer
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -35,19 +34,19 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 	work := func() {
 		gobot.Every(100*time.Millisecond, func() {
-			//beforeAccelerometer := d.Accelerometer
+			beforeAccelerometer := d.Accelerometer
 
 			d.GetData()
 
-			//moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
+			moved, vectorLength := hasMoved2(beforeAccelerometer, d.Accelerometer)
 
-			fmt.Printf("%d,%d,%d\n", d.Accelerometer.X, d.Accelerometer.Y, d.Accelerometer.Z)
+			// fmt.Printf("%d,%d,%d\n", d.Accelerometer.X, d.Accelerometer.Y, d.Accelerometer.Z)
 
 			//fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
 
-			//if moved {
-			//	accelerometer.Data <- vectorLength
-			//}
+			if moved {
+				accelerometer.Data <- vectorLength
+			}
 		})
 	}
 
@@ -95,7 +94,17 @@ func hasMoved(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, floa
 }
 
 func hasMoved2(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
-	distance := math.Pow((math.Sqrt(float64(beforeAccel.X)-float64(afterAccel.X)) + math.Sqrt(float64(beforeAccel.Y)-float64(afterAccel.Y)) + math.Sqrt(float64(beforeAccel.Z)-float64(afterAccel.Z))), 0.5)
+	deltaX := float64(afterAccel.X - beforeAccel.X)
+	deltaY := float64(afterAccel.Y - beforeAccel.Y)
+	deltaZ := float64(afterAccel.Z - beforeAccel.Z)
 
-	return false, distance
+	if math.Abs(deltaX) > sensitivityThreshold {
+		return true, deltaX
+	} else if math.Abs(deltaY) > sensitivityThreshold {
+		return true, deltaY
+	} else if math.Abs(deltaZ) > sensitivityThreshold {
+		return true, deltaZ
+	}
+
+	return false, 0
 }
