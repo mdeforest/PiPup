@@ -41,6 +41,8 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 			d.GetData()
 
+			fmt.Printf("Before: %d, After: %d\n", beforeAccelerometer.X, d.Accelerometer.X)
+
 			moved, vectorLength := hasMoved2(beforeAccelerometer, d.Accelerometer)
 
 			fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
