@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"sync"
 
 	"github.com/mdeforest/PiPup/server/internal/app/pod"
 	"github.com/spf13/viper"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func readConfig() {
@@ -24,6 +28,15 @@ func main() {
 	readConfig()
 
 	app := pod.PodApp{Port: "8080"}
+	app.WaitGroup = &sync.WaitGroup{}
 
-	pod.ListenAndServe(&app)
+	app.WaitGroup.Add(1)
+
+	srv := pod.StartHttpServer(&app)
+
+	if err := srv.Shutdown(context.TODO()); err != nil {
+		log.Panic(err)
+	}
+
+	app.WaitGroup.Wait()
 }

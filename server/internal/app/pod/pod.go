@@ -15,14 +15,11 @@ type PodApp struct {
 	WaitGroup        *sync.WaitGroup
 }
 
-func ListenAndServe(a *PodApp) {
-	a.WaitGroup = &sync.WaitGroup{}
-
+func StartHttpServer(a *PodApp) *http.Server {
+	srv := &http.Server{Addr: ":" + a.Port}
 	r := router.Router(a.WaitGroup)
 
 	log.Info(("Starting server on the port " + a.Port + "..."))
-
-	a.WaitGroup.Add(1)
 
 	go func() {
 		defer a.WaitGroup.Done()
@@ -32,5 +29,5 @@ func ListenAndServe(a *PodApp) {
 		}
 	}()
 
-	a.WaitGroup.Wait()
+	return srv
 }
