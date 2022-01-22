@@ -34,10 +34,15 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 	}
 
 	work := func() {
+		d.GetData()
+		fmt.Println(d.Accelerometer)
+
 		gobot.Every(100*time.Millisecond, func() {
 			beforeAccelerometer := d.Accelerometer
 
 			d.GetData()
+
+			fmt.Println(d.Accelerometer)
 
 			moved, vectorLength := hasMoved2(beforeAccelerometer, d.Accelerometer)
 
