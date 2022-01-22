@@ -68,16 +68,11 @@ func (a *Accelerometer) Start() error {
 		return err
 	}
 
-	if err := a.Driver.Start(); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func (a *Accelerometer) Stop() {
 	a.gobot.Stop()
-	a.Driver.Halt()
 }
 
 func hasMoved(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
