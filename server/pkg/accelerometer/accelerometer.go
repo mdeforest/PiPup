@@ -1,6 +1,7 @@
 package accelerometer
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"time"
@@ -20,6 +21,7 @@ type Accelerometer struct {
 	Driver  *i2c.MPU6050Driver
 	Data    chan float64
 	gobot   *gobot.Robot
+	work    *gobot.RobotWork
 }
 
 func NewAccelerometer(game games.Game) *Accelerometer {
@@ -32,33 +34,31 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 		Driver:  d,
 	}
 
-	work := func() {
-		d.GetData()
-
-		gobot.Every(100*time.Millisecond, func() {
-			beforeAccelerometer := d.Accelerometer
-
-			d.GetData()
-
-			fmt.Println(d.Accelerometer)
-
-			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
-
-			fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
-
-			if moved {
-				accelerometer.Data <- vectorLength
-			}
-		})
-	}
-
 	robot := gobot.NewRobot(game.String(),
 		[]gobot.Connection{a},
-		[]gobot.Device{d},
-		work)
+		[]gobot.Device{d})
+
+	d.GetData()
+
+	work := robot.Every(context.Background(), 100*time.Millisecond, func() {
+		beforeAccelerometer := d.Accelerometer
+
+		d.GetData()
+
+		fmt.Println(d.Accelerometer)
+
+		moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
+
+		fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
+
+		if moved {
+			accelerometer.Data <- vectorLength
+		}
+	})
 
 	accelerometer.gobot = robot
 	accelerometer.Data = make(chan float64)
+	accelerometer.work = work
 
 	return accelerometer
 }
@@ -72,6 +72,7 @@ func (a *Accelerometer) Start() error {
 }
 
 func (a *Accelerometer) Stop() {
+	a.work.CallCancelFunc()
 	a.Driver.Halt()
 	a.gobot.Stop()
 }
