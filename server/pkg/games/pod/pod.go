@@ -41,7 +41,7 @@ func (g *PodGame) SetLength(length int) {
 }
 
 func (g *PodGame) Start(wg *sync.WaitGroup) {
-	defer wg.Done()
+	//defer wg.Done()
 
 	fmt.Println("Game Started")
 

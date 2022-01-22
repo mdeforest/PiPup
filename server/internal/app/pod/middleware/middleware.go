@@ -48,7 +48,7 @@ func StartGame(wg *sync.WaitGroup) http.HandlerFunc {
 
 		game := pod.NewPodGame(levelInt, lengthInt)
 
-		wg.Add(1)
+		//wg.Add(1)
 
 		go game.Start(wg)
 

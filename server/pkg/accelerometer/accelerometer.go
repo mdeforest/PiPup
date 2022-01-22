@@ -11,8 +11,7 @@ import (
 	"gobot.io/x/gobot/platforms/raspi"
 )
 
-const kFilteringFactor float64 = 0.1
-const sensitivityThreshold float64 = 100.0
+const sensitivityThreshold float64 = 200.0
 const HasMoved = "has moved"
 
 type Accelerometer struct {
@@ -35,7 +34,6 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 	work := func() {
 		d.GetData()
-		fmt.Println(d.Accelerometer)
 
 		gobot.Every(100*time.Millisecond, func() {
 			beforeAccelerometer := d.Accelerometer
@@ -44,7 +42,7 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 
 			fmt.Println(d.Accelerometer)
 
-			moved, vectorLength := hasMoved2(beforeAccelerometer, d.Accelerometer)
+			moved, vectorLength := hasMoved(beforeAccelerometer, d.Accelerometer)
 
 			fmt.Printf("Moved: %t, Vector Length: %f\n", moved, vectorLength)
 
@@ -83,21 +81,6 @@ func (a *Accelerometer) Stop() {
 }
 
 func hasMoved(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
-
-	accelX := float64(afterAccel.X) - ((float64(afterAccel.X) * kFilteringFactor) + float64(beforeAccel.X)*(1.0-kFilteringFactor))
-	accelY := float64(afterAccel.Y) - ((float64(afterAccel.Y) * kFilteringFactor) + float64(beforeAccel.Y)*(1.0-kFilteringFactor))
-	accelZ := float64(afterAccel.Z) - ((float64(afterAccel.Z) * kFilteringFactor) + float64(beforeAccel.Z)*(1.0-kFilteringFactor))
-
-	deltaX := math.Abs(accelX - float64(beforeAccel.X))
-	deltaY := math.Abs(accelY - float64(beforeAccel.Y))
-	deltaZ := math.Abs(accelZ - float64(beforeAccel.Z))
-
-	bumpVectorLength := math.Sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)
-
-	return bumpVectorLength > sensitivityThreshold, bumpVectorLength
-}
-
-func hasMoved2(beforeAccel i2c.ThreeDData, afterAccel i2c.ThreeDData) (bool, float64) {
 	deltaX := float64(afterAccel.X - beforeAccel.X)
 	deltaY := float64(afterAccel.Y - beforeAccel.Y)
 	deltaZ := float64(afterAccel.Z - beforeAccel.Z)
