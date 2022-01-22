@@ -72,6 +72,7 @@ func (a *Accelerometer) Start() error {
 }
 
 func (a *Accelerometer) Stop() {
+	a.Driver.Halt()
 	a.gobot.Stop()
 }
 
