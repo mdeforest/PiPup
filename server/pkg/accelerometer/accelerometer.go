@@ -38,8 +38,6 @@ func NewAccelerometer(game games.Game) *Accelerometer {
 		[]gobot.Connection{a},
 		[]gobot.Device{d})
 
-	d.GetData()
-
 	work := robot.Every(context.Background(), 100*time.Millisecond, func() {
 		beforeAccelerometer := d.Accelerometer
 
@@ -67,6 +65,8 @@ func (a *Accelerometer) Start() error {
 	if err := a.gobot.Start(); err != nil {
 		return err
 	}
+
+	a.Driver.GetData()
 
 	return nil
 }
